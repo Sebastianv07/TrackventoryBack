@@ -1,6 +1,9 @@
 package com.ppi.trackventory.controllers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +22,11 @@ public class FormController {
     @Autowired
     private FormService formService;
 
-    // Obtener todos los formularios
+    // Obtener todos los menus y submenus
     @GetMapping
-    public ResponseEntity<List<Form>> getAllForms() {
-        List<Form> forms = formService.getAllForms();
-        return new ResponseEntity<>(forms, HttpStatus.OK);
+    public ResponseEntity<List<Form>> getAllFormsTree() {
+        List<Form> formsTree = formService.getFormTree();
+        return new ResponseEntity<>(formsTree, HttpStatus.OK);
     }
 
     // Obtener un formulario por su URL
@@ -31,7 +34,7 @@ public class FormController {
     public ResponseEntity<Form> getFormByUrl(@PathVariable Integer id) {
         Optional<Form> form = formService.getFormById(id);
         return form.map(f -> new ResponseEntity<>(f, HttpStatus.OK))
-                   .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     // Crear un nuevo formulario

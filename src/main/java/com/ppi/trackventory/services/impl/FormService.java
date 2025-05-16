@@ -1,6 +1,9 @@
 package com.ppi.trackventory.services.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,34 @@ public class FormService {
     // Obtener todos los formularios
     public List<Form> getAllForms() {
         return formRepository.findAll();
+    }
+
+    // Aqui se implementa la creacion del mapper para submenus
+    public List<Form> getFormTree() {
+        List<Form> allForms = formRepository.findAll();
+
+        Map<Integer, Form> map = new HashMap<>();
+        for (Form f : allForms) {
+            if (f.getChildren() == null) {
+                f.setChildren(new ArrayList<>());
+            }
+            map.put(f.getId(), f);
+        }
+
+        List<Form> roots = new ArrayList<>();
+
+        for (Form f : allForms) {
+            if (f.getParent() == null) {
+                roots.add(f);
+            } else {
+                Form parent = map.get(f.getParent().getId());
+                if (parent != null) {
+                    parent.getChildren().add(f);
+                }
+            }
+        }
+
+        return roots;
     }
 
     // Obtener un formulario por URL

@@ -21,9 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ppi.trackventory.models.Product;
 import com.ppi.trackventory.services.impl.ProductService;
 
+import lombok.extern.log4j.Log4j2;
+
 @RestController
 @RequestMapping("/products")
 @CrossOrigin("*")
+@Log4j2
 public class ProductController {
 
     @Autowired
@@ -36,12 +39,12 @@ public class ProductController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) BigDecimal price,
             @RequestParam(required = false) Long categoryId) {
-    	try {
-        return productService.getProductsByFilters(reference,name,price,categoryId);
-    	}catch(Exception e) {
-    		System.out.print(e);
-    	}
-    	return new ArrayList<Product>();
+        try {
+            return productService.getProductsByFilters(reference, name, price, categoryId);
+        } catch (Exception e) {
+            log.warn(e);
+        }
+        return new ArrayList<Product>();
     }
 
     // Obtener un producto por su referencia
@@ -60,6 +63,7 @@ public class ProductController {
     }
 
     // Actualizar un producto existente
+    @SuppressWarnings("unused")
     @PutMapping("/{reference}")
     public ResponseEntity<Product> updateProduct(@PathVariable String reference, @RequestBody Product updatedProduct) {
         return productService.getProductByReference(reference)
@@ -72,6 +76,7 @@ public class ProductController {
     }
 
     // Eliminar un producto por su referencia
+    @SuppressWarnings("unused")
     @DeleteMapping("/{reference}")
     public ResponseEntity<Object> deleteProduct(@PathVariable String reference) {
         return productService.getProductByReference(reference)
@@ -82,4 +87,3 @@ public class ProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
 }
-
