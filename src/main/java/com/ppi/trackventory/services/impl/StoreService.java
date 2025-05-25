@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ppi.trackventory.models.Store;
+import com.ppi.trackventory.models.DTO.StockByStoreDTO;
 import com.ppi.trackventory.repositories.StoreRepository;
 
 @Service
@@ -33,6 +34,10 @@ public class StoreService {
     // Eliminar una tienda
     public void deleteStoreById(Long id) {
         storeRepository.deleteById(id);
+    }
+
+    public List<StockByStoreDTO> getStockByStore() {
+        return storeRepository.getStockByStore();
     }
 }
 

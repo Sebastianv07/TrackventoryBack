@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ppi.trackventory.models.Store;
+import com.ppi.trackventory.models.DTO.StockByStoreDTO;
 import com.ppi.trackventory.services.impl.StoreService;
 
 @RestController
@@ -74,5 +75,11 @@ public class StoreController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/by-store")
+    public ResponseEntity<List<StockByStoreDTO>> getStockByStore() {
+        List<StockByStoreDTO> stockList = storeService.getStockByStore();
+        return ResponseEntity.ok(stockList);
     }
 }
