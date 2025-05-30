@@ -65,4 +65,13 @@ public class FormService {
     public void deleteFormById(Integer id) {
         formRepository.deleteById(id);
     }
+
+    public Integer getMaxId() {
+        return formRepository.findMaxId();
+    }
+
+    public boolean existsById(Integer id) {
+        return formRepository.existsById(id);
+    }
+
 }

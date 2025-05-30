@@ -40,7 +40,7 @@ public class StoreController {
     public ResponseEntity<Store> getStoreById(@PathVariable Long id) {
         Optional<Store> store = storeService.getStoreById(id);
         return store.map(s -> new ResponseEntity<>(s, HttpStatus.OK))
-                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     // Crear una nueva tienda
@@ -77,9 +77,9 @@ public class StoreController {
         }
     }
 
-    @GetMapping("/by-store")
-    public ResponseEntity<List<StockByStoreDTO>> getStockByStore() {
-        List<StockByStoreDTO> stockList = storeService.getStockByStore();
+    @GetMapping("/by-store/{id}")
+    public ResponseEntity<List<StockByStoreDTO>> getStockByStore(@PathVariable Integer id) {
+        List<StockByStoreDTO> stockList = storeService.getStockByStore(id);
         return ResponseEntity.ok(stockList);
     }
 }

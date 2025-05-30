@@ -36,10 +36,13 @@ public class TransactionsController {
             @RequestParam Long sellerId,
             @RequestParam Integer transactionType) {
         try {
-            User buyer = new User(); buyer.setId(buyerId);
-            User seller = new User(); seller.setId(sellerId);
+            User buyer = new User();
+            buyer.setId(buyerId);
+            User seller = new User();
+            seller.setId(sellerId);
 
-            Transactions savedTransaction = transactionsService.saveTransaction(buyer, seller, transactionType, transactionDetails);
+            Transactions savedTransaction = transactionsService.saveTransaction(buyer, seller, transactionType,
+                    transactionDetails);
             return ResponseEntity.ok(savedTransaction);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -62,7 +65,8 @@ public class TransactionsController {
     public ResponseEntity<?> getTransactionDetailsByTransactionId(@PathVariable Long id) {
         try {
             Transactions transaction = transactionsService.getTransactionById(id);
-            List<TransactionDetails> transactionDetails = transactionsService.getTransactionDetailsByTransaction(transaction);
+            List<TransactionDetails> transactionDetails = transactionsService
+                    .getTransactionDetailsByTransaction(transaction);
             return ResponseEntity.ok(transactionDetails);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -74,18 +78,18 @@ public class TransactionsController {
     public ResponseEntity<?> getAllTransactions() {
         try {
             List<Transactions> transactions = transactionsService.getAllTransactions();
-            
+
             if (transactions == null || transactions.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
-            
+
             return ResponseEntity.ok(transactions);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error al obtener las transacciones: " + e.getMessage());
+                    .body("Error al obtener las transacciones: " + e.getMessage());
         }
     }
-    
+
     @GetMapping("/by-type")
     public ResponseEntity<?> getTransactionsByType(@RequestParam Integer transactionTypeId) {
         try {

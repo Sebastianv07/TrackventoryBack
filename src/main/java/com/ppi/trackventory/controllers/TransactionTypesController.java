@@ -49,7 +49,8 @@ public class TransactionTypesController {
 
     // Actualizar un tipo de transacción existente
     @PutMapping("/{id}")
-    public ResponseEntity<TransactionTypes> updateTransactionType(@PathVariable Integer id, @RequestBody TransactionTypes updatedType) {
+    public ResponseEntity<TransactionTypes> updateTransactionType(@PathVariable Integer id,
+            @RequestBody TransactionTypes updatedType) {
         try {
             TransactionTypes existingType = transactionTypesService.getTransactionTypeById(id);
             existingType.setName(updatedType.getName());

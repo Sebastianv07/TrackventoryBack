@@ -31,7 +31,7 @@ public class RolController {
     public ResponseEntity<Rol> getRolById(@PathVariable Long id) {
         Optional<Rol> rol = rolService.getRolById(id);
         return rol.map(r -> new ResponseEntity<>(r, HttpStatus.OK))
-                  .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     // Crear un nuevo rol

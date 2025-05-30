@@ -22,7 +22,6 @@ import com.ppi.trackventory.services.impl.StockService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-
 @RestController
 @RequestMapping("/stocks")
 @CrossOrigin("*")
@@ -55,7 +54,8 @@ public class StockController {
 
     // Actualizar un stock existente
     @PutMapping("/{storeId}/{variationCode}")
-    public ResponseEntity<Stock> updateStock(@PathVariable Long storeId, @PathVariable String variationCode, @RequestBody Stock stockDetails) {
+    public ResponseEntity<Stock> updateStock(@PathVariable Long storeId, @PathVariable String variationCode,
+            @RequestBody Stock stockDetails) {
         Optional<Stock> stockOptional = stockService.getStockById(storeId, variationCode);
         if (stockOptional.isPresent()) {
             Stock stock = stockOptional.get();

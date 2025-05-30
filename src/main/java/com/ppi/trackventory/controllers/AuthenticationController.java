@@ -12,13 +12,15 @@ import org.springframework.web.bind.annotation.*;
 import com.ppi.trackventory.configurations.JwtUtils;
 import com.ppi.trackventory.models.JwtRequest;
 import com.ppi.trackventory.models.JwtResponse;
-import com.ppi.trackventory.models.User;
 import com.ppi.trackventory.services.impl.UserDetailsServiceImpl;
+
+import lombok.extern.log4j.Log4j2;
 
 import java.security.Principal;
 
 @RestController
 @CrossOrigin("*")
+@Log4j2
 public class AuthenticationController {
 
     @Autowired
@@ -32,31 +34,35 @@ public class AuthenticationController {
 
     @PostMapping("/generate-token")
     public ResponseEntity<?> generateToken(@RequestBody JwtRequest jwtRequest) throws Exception {
-        try{
-        	authenticate(jwtRequest.getUsername(),jwtRequest.getPassword());
-        }catch (Exception exception){
-            exception.printStackTrace();
-            throw new Exception("User not found");
+        log.warn("Datos recibidos para login: username='{}', password='{}'", jwtRequest.getUsername(),
+                jwtRequest.getPassword());
+
+        try {
+            authenticate(jwtRequest.getUsername(), jwtRequest.getPassword());
+        } catch (Exception exception) {
+            log.error("Falló la autenticación: {}", exception.getMessage());
+            throw new Exception("Usuario o contraseña inválidos.");
         }
 
-        UserDetails userDetails =  this.userDetailsService.loadUserByUsername(jwtRequest.getUsername());
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(jwtRequest.getUsername());
         String token = this.jwtUtils.generateToken(userDetails);
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
-    private void authenticate(String username,String password) throws Exception {
-        try{
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,password));
-        }catch (DisabledException exception){
-            throw  new Exception("USER DISABLED " + exception.getMessage());
-        }catch (BadCredentialsException e){
-            throw  new Exception("Invalid credentials " + e.getMessage());
+    private void authenticate(String username, String password) throws Exception {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        } catch (DisabledException exception) {
+            throw new Exception("USER DISABLED " + exception.getMessage());
+        } catch (BadCredentialsException e) {
+            throw new Exception("Invalid credentials " + e.getMessage());
         }
     }
 
     @GetMapping("/actualUser")
-    public User getCurrentUser(Principal principal){
-        return (User) this.userDetailsService.loadUserByUsername(principal.getName());
+    public ResponseEntity<?> getCurrentUser(Principal principal) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+        return ResponseEntity.ok(userDetails);
     }
-    
+
 }

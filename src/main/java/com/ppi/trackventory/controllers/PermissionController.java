@@ -34,7 +34,7 @@ public class PermissionController {
         PermissionId permissionId = new PermissionId(profileId, formUrl);
         Optional<Permission> permission = permissionService.getPermissionById(permissionId);
         return permission.map(p -> new ResponseEntity<>(p, HttpStatus.OK))
-                         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     // Crear un nuevo permiso

@@ -1,5 +1,6 @@
 package com.ppi.trackventory.configurations;
 
+import com.ppi.trackventory.services.impl.UserDetailsServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -8,8 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import com.ppi.trackventory.services.impl.UserDetailsServiceImpl;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -27,37 +26,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtUtils jwtUtil;
 
     @Override
-    protected void doFilterInternal(@SuppressWarnings("null") HttpServletRequest request, @SuppressWarnings("null") HttpServletResponse response, @SuppressWarnings("null") FilterChain filterChain) throws ServletException, IOException {
-        String requestTokenHeader = request.getHeader("Authorization");
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
+        final String requestTokenHeader = request.getHeader("Authorization");
         String username = null;
         String jwtToken = null;
 
-        if(requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")){
+        // Revisar si el header Authorization está presente y comienza con "Bearer "
+        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwtToken = requestTokenHeader.substring(7);
 
-            try{
-                username = this.jwtUtil.extractUsername(jwtToken);
-            }catch (ExpiredJwtException exception){
-                System.out.println("Token has expired");
-            }catch (Exception e){
-                e.printStackTrace();
+            try {
+                username = jwtUtil.extractUsername(jwtToken);
+            } catch (ExpiredJwtException e) {
+                logger.warn("El token ha expirado", e);
+            } catch (Exception e) {
+                logger.error("Error al extraer el username del token", e);
             }
 
-        }else{
-            System.out.println("Invalid token, does not start with bearer string");
+        } else if (requestTokenHeader != null) {
+            logger.warn("El token no empieza con 'Bearer '");
         }
 
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            if(this.jwtUtil.validateToken(jwtToken,userDetails)){
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
-                usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        // Validar el token y autenticar al usuario
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            if (jwtUtil.validateToken(jwtToken, userDetails)) {
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                logger.warn("Token inválido para el usuario: " + username);
             }
-        }else{
-            System.out.println("Invalid token");
         }
-        filterChain.doFilter(request,response);
+
+        // Continuar con la cadena de filtros
+        filterChain.doFilter(request, response);
     }
 }

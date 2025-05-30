@@ -31,13 +31,13 @@ public class ColorController {
     public ResponseEntity<Color> getColorByName(@PathVariable Integer id) {
         Optional<Color> color = colorService.getColorById(id);
         return color.map(c -> new ResponseEntity<>(c, HttpStatus.OK))
-                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     // Crear un nuevo color
     @PostMapping
     public ResponseEntity<Color> createColor(@RequestBody Color color) {
-    	color.setId(null);
+        color.setId(null);
         Color newColor = colorService.saveColor(color);
         return new ResponseEntity<>(newColor, HttpStatus.CREATED);
     }

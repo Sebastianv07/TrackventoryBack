@@ -39,13 +39,13 @@ public class ProductVariationController {
     @GetMapping("/product/{reference}")
     public List<ProductVariation> getVariationsByProductReference(@PathVariable String reference) {
         List<ProductVariation> variations = null;
-		try {
-			variations = productVariationService.getVariationsByProductReference(reference);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return variations;
+        try {
+            variations = productVariationService.getVariationsByProductReference(reference);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return variations;
     }
 
     // Crear una nueva variación de producto
@@ -57,11 +57,12 @@ public class ProductVariationController {
     // Actualizar una variación de producto existente
     @PutMapping("/{code}")
     public ResponseEntity<ProductVariation> updateProductVariation(
-            @PathVariable String code, 
+            @PathVariable String code,
             @RequestBody ProductVariation productVariationDetails) {
-        
-        Optional<ProductVariation> updatedProductVariation = productVariationService.updateProductVariation(code, productVariationDetails);
-        
+
+        Optional<ProductVariation> updatedProductVariation = productVariationService.updateProductVariation(code,
+                productVariationDetails);
+
         if (updatedProductVariation.isPresent()) {
             return ResponseEntity.ok(updatedProductVariation.get());
         } else {

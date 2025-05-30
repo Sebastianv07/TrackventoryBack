@@ -11,6 +11,7 @@ import com.ppi.trackventory.models.DTO.StockByStoreDTO;
 public interface StoreRepository extends JpaRepository<Store, Long> {
     @Query(value = """
             SELECT
+                s.id,
                 s.code AS codeStore,
                 st.quantity AS stock,
                 c.name AS nameColor,
@@ -22,8 +23,9 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             JOIN us_ppi.product_variations v ON v.code = st.variation_stk
             JOIN us_ppi.products p ON p.reference = v.product_vrt
             JOIN us_ppi.colors c ON c.id_color = v.color_vrt
+            where s.id = :id
             ORDER BY p.reference
             """, nativeQuery = true)
-    List<StockByStoreDTO> getStockByStore();
+    List<StockByStoreDTO> getStockByStore(Integer id);
 
 }

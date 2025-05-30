@@ -31,7 +31,7 @@ public class ProfileController {
     public ResponseEntity<Profile> getProfileById(@PathVariable Long id) {
         Optional<Profile> profile = profileService.getProfileById(id);
         return profile.map(p -> new ResponseEntity<>(p, HttpStatus.OK))
-                      .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     // Crear un nuevo perfil

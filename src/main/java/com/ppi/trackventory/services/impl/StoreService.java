@@ -36,8 +36,7 @@ public class StoreService {
         storeRepository.deleteById(id);
     }
 
-    public List<StockByStoreDTO> getStockByStore() {
-        return storeRepository.getStockByStore();
+    public List<StockByStoreDTO> getStockByStore(Integer id) {
+        return storeRepository.getStockByStore(id);
     }
 }
-

@@ -39,7 +39,7 @@ public class ProductCategoryController {
     public ResponseEntity<ProductCategory> getCategoryById(@PathVariable Long id) {
         Optional<ProductCategory> category = productCategoryService.getCategoryById(id);
         return category.map(c -> new ResponseEntity<>(c, HttpStatus.OK))
-                       .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     // Crear una nueva categoría
@@ -51,7 +51,8 @@ public class ProductCategoryController {
 
     // Actualizar una categoría existente
     @PutMapping("/{id}")
-    public ResponseEntity<ProductCategory> updateCategory(@PathVariable Long id, @RequestBody ProductCategory updatedCategory) {
+    public ResponseEntity<ProductCategory> updateCategory(@PathVariable Long id,
+            @RequestBody ProductCategory updatedCategory) {
         Optional<ProductCategory> categoryData = productCategoryService.getCategoryById(id);
 
         if (categoryData.isPresent()) {
